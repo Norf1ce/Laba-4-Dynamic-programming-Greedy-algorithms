@@ -1,0 +1,57 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+struct Segment {
+    int start, end;
+};
+
+bool compareSegments(const Segment& a, const Segment& b) {
+    if (a.start == b.start) return a.end < b.end;
+    return a.start < b.start;
+}
+
+int main() {
+    int n;
+    cout << "Введіть N: ";
+    while (!(cin >> n) || n < 1 || n > 15000) {
+        cout << "Помилка. Введіть ще раз: ";
+        cin.clear();
+        cin.ignore(10000, '\n');
+    }
+
+    vector<Segment> segments(n);
+    cout << "Введіть відрізки:\n";
+    for (int i = 0; i < n; ++i) {
+        while (!(cin >> segments[i].start >> segments[i].end)) {
+            cout << "Помилка. Введіть ще раз: ";
+            cin.clear();
+            cin.ignore(10000, '\n');
+        }
+        if (segments[i].start > segments[i].end) {
+            swap(segments[i].start, segments[i].end);
+        }
+    }
+
+    sort(segments.begin(), segments.end(), compareSegments);
+
+    vector<Segment> merged;
+    merged.push_back(segments[0]);
+
+    for (int i = 1; i < n; ++i) {
+        if (segments[i].start <= merged.back().end) {
+            merged.back().end = max(merged.back().end, segments[i].end);
+        } else {
+            merged.push_back(segments[i]);
+        }
+    }
+
+    cout << "\nРезультат:\n" << merged.size() << endl;
+    for (const auto& seg : merged) {
+        cout << seg.start << " " << seg.end << endl;
+    }
+
+    return 0;
+}
