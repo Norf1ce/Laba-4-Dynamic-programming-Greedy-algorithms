@@ -1,0 +1,42 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+    int n;
+    cout << "Введіть N: ";
+    while (!(cin >> n) || n <= 0) {
+        cout << "Помилка. Введіть ще раз: ";
+        cin.clear();
+        cin.ignore(10000, '\n');
+    }
+
+    vector<int> a(n);
+    cout << "Введіть висоти:\n";
+    for (int i = 0; i < n; ++i) {
+        while (!(cin >> a[i]) || a[i] < 1 || a[i] > 65535) {
+            cout << "Помилка. Введіть ще раз: ";
+            cin.clear();
+            cin.ignore(10000, '\n');
+        }
+    }
+
+    vector<int> dp(n, 1);
+    int max_len = 1;
+
+    for (int i = 1; i < n; ++i) {
+        for (int j = 0; j < i; ++j) {
+            if (a[i] > a[j]) {
+                dp[i] = max(dp[i], dp[j] + 1);
+            }
+        }
+        max_len = max(max_len, dp[i]);
+    }
+
+    int to_remove = n - max_len;
+    cout << "\nРезультат:\n" << to_remove << endl;
+
+    return 0;
+}
